@@ -6,36 +6,8 @@ from shot import Shot
 import pygame
 from logger import log_state
 import game_state
-
-
-def game_over_screen(screen, font, score):
-    while True:
-        screen.fill((0, 0, 0))
-
-        text1 = font.render("GAME OVER", True, (255, 0, 0))
-        text2 = font.render(f"Score: {score}", True, (255, 255, 255))
-        text3 = font.render("ENTER - restart", True, (255, 255, 255))
-        text4 = font.render("ESC - quit", True, (255, 255, 255))
-
-        screen.blit(text1, (350, 250))
-        screen.blit(text2, (350, 300))
-        screen.blit(text3, (350, 350))
-        screen.blit(text4, (350, 400))
-
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    exit()
-
-                if event.key == pygame.K_RETURN:
-                    return   # restart gry
+from ui import enter_name, show_leaderboard, end_menu
+from leaderboard import save_score
 
 
 
@@ -50,7 +22,7 @@ def main():
     font = pygame.font.Font(None, 50)
 
     while True:   # <-- pętla restartu gry
-
+        game_start_time = pygame.time.get_ticks()
         game_state.SCORE = 0
         clock = pygame.time.Clock()
         dt = 0
@@ -91,7 +63,14 @@ def main():
 
             for asteroid in asteroids:
                 if asteroid.collision(player):
-                    game_over_screen(screen, font, game_state.SCORE)
+                    game_time = (pygame.time.get_ticks() - game_start_time)/1000
+                    nickname = enter_name(screen, font)
+                    save_score(nickname, game_state.SCORE, game_time)
+                    show_leaderboard(screen, font)
+                    choice = end_menu(screen, font)
+                    if choice == "quit":
+                        pygame.quit()
+                        return
                     running = False
                     break
                 for bullet in bullets:
