@@ -5,6 +5,8 @@ from asteroidfield import AsteroidField
 from shot import Shot
 import pygame
 from logger import log_state
+import game_state
+
 
 def main():
     print("Starting Asteroids!")
@@ -46,6 +48,7 @@ def main():
         for asteroid in asteroids:
             if asteroid.collision(player):
                 print("Game over!")
+                print(f"Your score: {game_state.SCORE}")
                 return
             for bullet in bullets:
                 if asteroid.collision(bullet):
