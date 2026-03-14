@@ -1,3 +1,9 @@
 venv/
 __pycache__/
 game_state.jsonl
+leaderboard.csv
+
+# PyInstaller
+dist/
+build/
+*.spec
